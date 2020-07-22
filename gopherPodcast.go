@@ -7,6 +7,7 @@ import (
     "strings"
     "net/http"
     "github.com/mmcdole/gofeed"
+    "github.com/eidolon/wordwrap"
     "github.com/grokify/html-strip-tags-go"
 )
 
@@ -27,16 +28,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	wrapper := wordwrap.Wrapper(60, false)
+
 	output := feed.Title + "\n\n"
 
 	for _, item := range feed.Items {
 		dirname := strings.ReplaceAll(item.Title, " ", "_")
 		if _, err := os.Stat(dirname); os.IsNotExist(err) {
-			os.Mkdir(dirname, 0755)
+			//os.Mkdir(dirname, 0755)
 			filename := strings.ReplaceAll(item.Title + ".mp3", " ", "_")
-			downloadFile(item.Enclosures[0].URL, dirname + "/" + filename)
+			//downloadFile(item.Enclosures[0].URL, dirname + "/" + filename)
 			output += " -- " + item.Title + " --\n\n"
-			output += strip.StripTags(item.Description) + "\n\n"
+			output += wrapper(strip.StripTags(item.Description)) + "\n\n"
 			output += "9" + item.Title + ".mp3\t" + dirname + "/" + filename + "\n\n"
 		}
 	}
