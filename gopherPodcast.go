@@ -34,14 +34,14 @@ func main() {
 
 	for _, item := range feed.Items {
 		dirname := strings.ReplaceAll(item.Title, " ", "_")
+		filename := strings.ReplaceAll(item.Title + ".mp3", " ", "_")
 		if _, err := os.Stat(dirname); os.IsNotExist(err) {
 			os.Mkdir(dirname, 0755)
-			filename := strings.ReplaceAll(item.Title + ".mp3", " ", "_")
 			downloadFile(item.Enclosures[0].URL, dirname + "/" + filename)
-			output += " -- " + item.Title + " --\n\n"
-			output += wrapper(strip.StripTags(item.Description)) + "\n\n"
-			output += "9" + item.Title + ".mp3\t" + dirname + "/" + filename + "\n\n"
 		}
+		output += " -- " + item.Title + " --\n\n"
+		output += wrapper(strip.StripTags(item.Description)) + "\n\n"
+		output += "9" + item.Title + ".mp3\t" + dirname + "/" + filename + "\n\n"
 	}
 
 	fmt.Println(output)

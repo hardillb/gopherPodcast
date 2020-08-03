@@ -32,14 +32,14 @@ func main() {
 
 	for _, item := range feed.Items {
 		dirname := strings.ReplaceAll(item.Title, " ", "_")
+		filename := strings.ReplaceAll(item.Title, " ", "_")
 		if _, err := os.Stat(dirname); os.IsNotExist(err) {
 			os.Mkdir(dirname, 0755)
-			filename := strings.ReplaceAll(item.Title, " ", "_")
-			output += " -- " + item.Title + " --\n\n"
-			output += "0" + item.Title + "\t" + dirname + "/" + filename + "\n\n"
 			body, _ := html2text.FromString(item.Content, html2text.Options{PrettyTables: true})
 			writeFile(body, dirname + "/" + filename)
 		}
+		output += " -- " + item.Title + " --\n\n"
+		output += "0" + item.Title + "\t" + dirname + "/" + filename + "\n\n"
 	}
 
 	fmt.Println(output)
